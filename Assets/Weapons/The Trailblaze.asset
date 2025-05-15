@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b82bef739c68d548bbd6fbd93708060, type: 3}
+  m_Name: The Trailblaze
+  m_EditorClassIdentifier: 
+  swordName: The Trailblaze
+  level: 1
+  baseDamage: 4
+  baseSwingSpeed: 0.1
+  swordSprite: {fileID: -168421969075237668, guid: ecbf14b486871b1409a87ddbd2e89d1b, type: 3}
+  swingSounds: []
+  weaponType: 1
+  animationPrefix: Spear
+  comboLength: 3

@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 3
   tags:
   - VerticalBoost
+  - Weak Point
+  - Enemy
+  - Breakable
+  - Sword
   layers:
   - Default
   - TransparentFX
@@ -15,8 +19,8 @@ TagManager:
   - Ground
   - Wall
   - PushUp
-  - 
-  - 
+  - Coin
+  - PlayerLight
   - 
   - 
   - 
@@ -41,6 +45,15 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 22246763
+    locked: 0
+  - name: Player
+    uniqueID: 2574728009
+    locked: 0
+  - name: Foreground
+    uniqueID: 3132082725
     locked: 0
   m_RenderingLayers:
   - Default
