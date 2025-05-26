@@ -40,10 +40,17 @@ public class SwordSwing : MonoBehaviour
     public GameObject attackArea;
     [SerializeField] private float getsugaOffsetX = 1f;
     [SerializeField] private float getsugaOffsetY = 0f;
+    [SerializeField] private GameObject frostbreakerSpikePrefab;    
+    [SerializeField] private float frostbreakerRadius = 2f;
+    public GameObject intonerFireballPrefab;
+    public GameObject scytheOfJudasPrefab;
+    private Transform playerTransform;
+    private bool scythesActive = false;
     private List<SpriteRenderer> allRenderers = new List<SpriteRenderer>();
     public PlayerMovement playerMovement;
     void Start()
     {
+        playerTransform = transform.root;
         spriteRenderer = GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
         animator = GetComponent<Animator>();
@@ -278,27 +285,62 @@ public class SwordSwing : MonoBehaviour
             animator.SetTrigger("WarpathSwordDance");
             StartCoroutine(FinishCastingAfter(2f));
         }
-        else if (currentSword.swordName == "WanderersRepose")
+        else if (currentSword.swordName == "Frostbreaker")
         {
             StartCoroutine(PlayRandomFromList(swingSoundList1, 0.5f));
             StartCoroutine(PlayRandomFromList(swingSoundList2, 0.5f));
             StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));
             StartCoroutine(PlayRandomFromList(swingSoundList4, 0.5f));
+            SpawnFrostbreakerCircle();
             animator.SetTrigger("Shadowcast");
-            Vector2 spawnPosition = transform.position + transform.right * 2f;
-            Instantiate(vortexPrefab, spawnPosition, Quaternion.identity);
             StartCoroutine(FinishCastingAfter(2f));
         }
-        else if (currentSword.swordName == "Dauntless")
+        else if (currentSword.swordName == "TheIntoner")
         {
             StartCoroutine(PlayRandomFromList(swingSoundList1, 0.5f));
             StartCoroutine(PlayRandomFromList(swingSoundList2, 0.5f));
             StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));
             StartCoroutine(PlayRandomFromList(swingSoundList4, 0.5f));
-            animator.SetTrigger("TitanfallCleave"); 
-            StartCoroutine(FinishCastingAfter(2f));
+            animator.SetTrigger("IntonerCast");
+            StartCoroutine(FinishCastingAfter(5f));
         }
-        else if (currentSword.swordName == "TheTrailblaze")
+        else if (currentSword.swordName == "WanderersRepose")
+            {
+                StartCoroutine(PlayRandomFromList(swingSoundList1, 0.5f));
+                StartCoroutine(PlayRandomFromList(swingSoundList2, 0.5f));
+                StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));
+                StartCoroutine(PlayRandomFromList(swingSoundList4, 0.5f));
+                animator.SetTrigger("Shadowcast");
+                Vector2 spawnPosition = transform.position + transform.right * 2f;
+                Instantiate(vortexPrefab, spawnPosition, Quaternion.identity);
+                StartCoroutine(FinishCastingAfter(2f));
+            }
+            else if (currentSword.swordName == "Dauntless")
+            {
+                StartCoroutine(PlayRandomFromList(swingSoundList1, 0.5f));
+                StartCoroutine(PlayRandomFromList(swingSoundList2, 0.5f));
+                StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));
+                StartCoroutine(PlayRandomFromList(swingSoundList4, 0.5f));
+                animator.SetTrigger("TitanfallCleave");
+                StartCoroutine(FinishCastingAfter(2f));
+            }
+            else if (currentSword.swordName == "TertiusDecimus")
+            {
+                if (scythesActive) 
+                {
+                    // Already active, ignore further triggers
+                    return;
+                }
+                scythesActive = true;
+                StartCoroutine(PlayRandomFromList(swingSoundList1, 0.5f));
+                StartCoroutine(PlayRandomFromList(swingSoundList2, 0.5f));
+                StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));
+                StartCoroutine(PlayRandomFromList(swingSoundList4, 0.5f));
+                animator.SetTrigger("Shadowcast");
+                StartCoroutine(SpawnAndRotateScythes());
+                StartCoroutine(FinishCastingAfter(2f));
+            }
+            else if (currentSword.swordName == "TheTrailblaze")
         {
             isCastingMagic = true;
 
@@ -352,6 +394,104 @@ public class SwordSwing : MonoBehaviour
         // Slight forward offset
         cleave.transform.localPosition += new Vector3(1f * Mathf.Sign(player.localScale.x), -0.5f, 0f);
     }
+    private IEnumerator SpawnAndRotateScythes()
+    {
+        if (playerTransform == null || scytheOfJudasPrefab == null)
+        {
+            Debug.LogError("PlayerTransform or scytheOfJudasPrefab is not assigned!");
+            yield break;
+        }
+
+        int scytheCount = 4;
+        float radius = 2f;
+        float duration = 15f;
+
+        GameObject[] scythes = new GameObject[scytheCount];
+
+        for (int i = 0; i < scytheCount; i++)
+        {
+            GameObject scythe = Instantiate(scytheOfJudasPrefab, playerTransform.position, Quaternion.identity);
+            scythe.transform.parent = playerTransform;
+
+            // Pass initial angle and radius to the scythe script
+            ScytheOfJudas scytheScript = scythe.GetComponent<ScytheOfJudas>();
+            if (scytheScript != null)
+            {
+                float initialAngle = i * (360f / scytheCount);
+                scytheScript.SetInitialOrbit(initialAngle, radius);
+            }
+
+            scythes[i] = scythe;
+        }
+
+        // Wait for duration, then destroy scythes
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        for (int i = 0; i < scytheCount; i++)
+        {
+            if (scythes[i] != null)
+                Destroy(scythes[i]);
+        }
+        scythesActive = false;
+    }
+
+    public void SpawnIntonerFireballsFromTip()
+    {
+        if (intonerFireballPrefab == null || spawnPoint == null)
+        {
+            Debug.LogWarning("Intoner fireball prefab or spawn point not assigned.");
+            return;
+        }
+
+        StartCoroutine(SpawnFireballsRoutine());
+    }
+
+    private IEnumerator SpawnFireballsRoutine()
+    {
+        float duration = 3f;
+        float fireballsPerSecond = 10f;
+        int totalFireballs = Mathf.RoundToInt(duration * fireballsPerSecond);
+        float interval = 1f / fireballsPerSecond;
+
+        for (int i = 0; i < totalFireballs; i++)
+        {
+            GameObject fireball = Instantiate(
+                intonerFireballPrefab,
+                spawnPoint.position,
+                spawnPoint.rotation
+            );
+
+            fireball.transform.localScale = spawnPoint.lossyScale;
+
+            yield return new WaitForSeconds(interval);
+        }
+    }
+    void SpawnFrostbreakerCircle()
+    {
+        if (playerTransform == null)
+        {
+            Debug.LogError("Player Transform is null. Make sure this object is under the Player in the hierarchy.");
+            return;
+        }
+
+        int spikeCount = 8;
+        float angleStep = 360f / spikeCount;
+
+        for (int i = 0; i < spikeCount; i++)
+        {
+            float angle = angleStep * i * Mathf.Deg2Rad;
+            Vector2 offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * frostbreakerRadius;
+            Vector3 spawnPos = playerTransform.position + (Vector3)offset;
+
+            GameObject spike = Instantiate(frostbreakerSpikePrefab, spawnPos, Quaternion.identity);
+            spike.transform.parent = playerTransform;
+        }
+    }
     public void SpawnSoulswordFromTip()
     {
         if (spawnPoint == null || soulswordProjectilePrefab == null)
@@ -370,8 +510,6 @@ public class SwordSwing : MonoBehaviour
         // Copy scale
         projectile.transform.localScale = spawnPoint.lossyScale;
 
-        // Optional: If your projectile has a SwordTip inside that needs to match transforms,
-        // find it and copy the same transform data:
         Transform projectileTip = projectile.transform.Find("SwordTip");
         if (projectileTip != null)
         {

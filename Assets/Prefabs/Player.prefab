@@ -481,6 +481,10 @@ MonoBehaviour:
   attackArea: {fileID: 4487696249203051908}
   getsugaOffsetX: 1
   getsugaOffsetY: -1.5
+  frostbreakerSpikePrefab: {fileID: 7381476127428398674, guid: c69a2cdd746d8164ea354aa16493d57c, type: 3}
+  frostbreakerRadius: 2
+  intonerFireballPrefab: {fileID: 4791284169552912180, guid: a3a9e30d07c9f0c4480fc6685adcdd79, type: 3}
+  scytheOfJudasPrefab: {fileID: 2271494311720742654, guid: 141b6570e704031438f4e86e160a98c4, type: 3}
   playerMovement: {fileID: 1567956220478301437}
 --- !u!95 &2741049571807690316
 Animator:
