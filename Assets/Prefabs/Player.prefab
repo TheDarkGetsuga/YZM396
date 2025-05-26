@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 8218044705539857299}
   m_Layer: 0
   m_Name: SwordTip
-  m_TagString: Enemy
+  m_TagString: Sword
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -408,7 +408,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.51, y: 0.59}
+  m_Size: {x: 0.57, y: 0.59}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
@@ -430,6 +430,13 @@ MonoBehaviour:
   currentSwordIndex: 0
   playerHP: {fileID: 4459685373983800652}
   flameParticlePrefab: {fileID: 4769156533922232917, guid: 1ff2d222feb64424a87d9904886611b7, type: 3}
+  getsugatenshoPrefab: {fileID: 8928514247931852598, guid: 5ded6fcd9b9c90b44ab4f766d58ffc55, type: 3}
+  zangerinFireballPrefab: {fileID: 7391006675548007085, guid: 2f5749c6f8a9dcf4793ae1d18af3e397, type: 3}
+  shadowcloakPrefab: {fileID: 3358348175472180872, guid: 77b495767dbd02345bc1657b5ead2dca, type: 3}
+  soulbinderPrefab: {fileID: 456998317787206628, guid: cf3a0763b28896b4f98fef36f3220a68, type: 3}
+  soulswordProjectilePrefab: {fileID: 7906077334202618875, guid: 854967897c195da4d9d7aaca9fdf7c6f, type: 3}
+  vortexPrefab: {fileID: 2711322557309114414, guid: 210b7db59e7a38b49adb7e79a3d8ac9d, type: 3}
+  titanfallCleavePrefab: {fileID: 3291352111546235105, guid: d4a4802b1b1468340b7beb24d5e6e21d, type: 3}
   spawnPoint: {fileID: 8218044705539857299}
   swingSoundList1:
   - {fileID: 8300000, guid: e3022cbd65362c24192695fa65102e84, type: 3}
@@ -472,6 +479,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e26badf69348e2441b2136e9ebc0e7f4, type: 3}
   - {fileID: 8300000, guid: 88c247f9c2a661c47b8370e04b6c5bc3, type: 3}
   attackArea: {fileID: 4487696249203051908}
+  getsugaOffsetX: 1
+  getsugaOffsetY: -1.5
+  playerMovement: {fileID: 1567956220478301437}
 --- !u!95 &2741049571807690316
 Animator:
   serializedVersion: 7
@@ -533,7 +543,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
     oldSize: {x: 0.64, y: 0.64}
-    newSize: {x: 0.51, y: 0.59}
+    newSize: {x: 0.57, y: 0.59}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -955,6 +965,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab36bfa65b2220d4bae2cb1f2752b4a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 8
+  jumpingPower: 16
   dust: {fileID: 3230853517998912341}
   landSound: {fileID: 8300000, guid: 613fd4af4633b5143bd0b8b2b602b422, type: 3}
   maxVerticalSpeed: 20
@@ -1205,6 +1217,14 @@ MonoBehaviour:
   knockbackForce: 10
   verticalKnockbackMultiplier: 1.5
   invincibilityDuration: 1
+  customFont: {fileID: 12800000, guid: 07d3bf95a35b5f949908cbb67438c5f4, type: 3}
+  hpColor: {r: 0.7584905, g: 0, b: 0.14770867, a: 1}
+  manaColor: {r: 0, g: 0.82641506, b: 0.82641506, a: 1}
+  goldColor: {r: 0.5254902, g: 0, b: 0, a: 1}
+  deathsColor: {r: 0.5245282, g: 0, b: 0, a: 1}
+  playtimeColor: {r: 0.5254902, g: 0, b: 0, a: 1}
+  swordNameColor: {r: 0.5254902, g: 0, b: 0, a: 1}
+  swordSwing: {fileID: 3174943305802422836}
 --- !u!114 &7001219313625970371
 MonoBehaviour:
   m_ObjectHideFlags: 0

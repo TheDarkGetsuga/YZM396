@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class CameraFollow : MonoBehaviour
 {
@@ -27,6 +28,8 @@ public class CameraFollow : MonoBehaviour
     private float shakeStrengthX = 0f;
     private float shakeStrengthY = 0f;
 
+    private bool isTemporarilyFocusing = false;
+
     public static CameraFollow Instance { get; private set; }
 
     void Awake()
@@ -45,33 +48,32 @@ public class CameraFollow : MonoBehaviour
 
     void Update()
     {
-        Vector3 targetPosition = target.position + offset;
-
-        if (Mathf.Abs(targetRb.linearVelocity.y) > movementSpeedThreshold)
+        if (!isTemporarilyFocusing)
         {
-            if (targetRb.linearVelocity.y < 0)
+            Vector3 targetPosition = target.position + offset;
+
+            if (Mathf.Abs(targetRb.linearVelocity.y) > movementSpeedThreshold && targetRb.linearVelocity.y < 0)
             {
                 targetPosition.y += fallOffsetY;
             }
-        }
 
-        // Screen shake logic
-        if (shakeDuration > 0)
-        {
-            targetPosition.x += Random.Range(-shakeStrengthX, shakeStrengthX);
-            targetPosition.y += Random.Range(-shakeStrengthY, shakeStrengthY);
-            shakeDuration -= Time.deltaTime;
-        }
-        else
-        {
-            shakeStrengthX = 0f;
-            shakeStrengthY = 0f;
-        }
+            // Screen shake logic (unscaled time)
+            if (shakeDuration > 0)
+            {
+                targetPosition.x += Random.Range(-shakeStrengthX, shakeStrengthX);
+                targetPosition.y += Random.Range(-shakeStrengthY, shakeStrengthY);
+                shakeDuration -= Time.unscaledDeltaTime;
+            }
+            else
+            {
+                shakeStrengthX = 0f;
+                shakeStrengthY = 0f;
+            }
 
-        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
+            transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
+        }
 
         float targetZoom;
-
         if (Mathf.Abs(targetRb.linearVelocity.y) > movementSpeedThreshold)
         {
             targetZoom = fallZoom;
@@ -89,8 +91,57 @@ public class CameraFollow : MonoBehaviour
             targetZoom = defaultZoom;
         }
 
-        Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, targetZoom, zoomSpeed * Time.deltaTime);
+        Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, targetZoom, zoomSpeed * Time.unscaledDeltaTime);
     }
+
+    public void FocusTemporarilyOnTarget(Transform targetTransform, float duration = 1f, float moveSpeed = 5f, bool trackDuringWait = false)
+    {
+        StopAllCoroutines();
+        StartCoroutine(MoveToTargetAndBack(targetTransform, duration, moveSpeed, trackDuringWait));
+    }
+
+
+    private IEnumerator MoveToTargetAndBack(Transform targetTransform, float duration, float moveSpeed, bool trackDuringWait = false)
+    {
+        isTemporarilyFocusing = true;
+
+        Vector3 originalPosition = transform.position;
+        Vector3 focusPosition = new Vector3(targetTransform.position.x, targetTransform.position.y, originalPosition.z);
+
+        float elapsed = 0f;
+        while (elapsed < 1f)
+        {
+            transform.position = Vector3.Lerp(originalPosition, focusPosition, elapsed);
+            elapsed += Time.unscaledDeltaTime * moveSpeed;
+            yield return null;
+        }
+        transform.position = focusPosition;
+
+        float waitTime = 0f;
+        while (waitTime < duration)
+        {
+            if (trackDuringWait && targetTransform != null)
+            {
+                Vector3 updatedFocus = new Vector3(targetTransform.position.x, targetTransform.position.y, originalPosition.z);
+                transform.position = Vector3.Lerp(transform.position, updatedFocus, Time.unscaledDeltaTime * moveSpeed);
+            }
+
+            waitTime += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        elapsed = 0f;
+        while (elapsed < 1f)
+        {
+            transform.position = Vector3.Lerp(transform.position, originalPosition, elapsed);
+            elapsed += Time.unscaledDeltaTime * moveSpeed;
+            yield return null;
+        }
+        transform.position = originalPosition;
+
+        isTemporarilyFocusing = false;
+    }
+
 
     public void ScreenShake(float xStrength, float yStrength, float duration)
     {
@@ -108,5 +159,10 @@ public class CameraFollow : MonoBehaviour
     {
         isInBossFight = active;
         offset = active ? bossOffset : baseOffset;
+    }
+
+    public bool IsInBossFightMode()
+    {
+        return isInBossFight;
     }
 }

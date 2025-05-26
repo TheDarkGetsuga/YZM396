@@ -121,6 +121,11 @@ public class BasicEnemy : MonoBehaviour
         attackStateTimer = 0f;
         Debug.Log("Enemy has detected the player and entered attack state.");
     }
+    public bool IsInAttackState()   
+    {
+        return isInAttackState;
+    }
+
 
     void MoveTowardPlayer()
     {

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class Coin : MonoBehaviour
 {
@@ -6,33 +7,39 @@ public class Coin : MonoBehaviour
     public float pickupDelay = 0.2f;
     private bool canBePickedUp = false;
 
-    public float drag = 2f; // Set this to control how much friction the coin has
-    public float angularDrag = 5f; // Set this to control how much the coin slows down rotating
+    public float drag = 2f;
+    public float angularDrag = 5f;
 
     private Rigidbody2D rb;
+    private static GameObject player;
+    private static CoinInventory coinInventory;
 
     private void Start()
     {
-        // Get the Rigidbody2D component
         rb = GetComponent<Rigidbody2D>();
-
-        // Set drag and angular drag
         rb.linearDamping = drag;
         rb.angularDamping = angularDrag;
 
-        // Enable trigger-based pickup after delay
         Invoke(nameof(EnablePickup), pickupDelay);
 
-        // Ignore physical collision with the player
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        // Cache player and inventory only once
+        if (player == null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                coinInventory = player.GetComponent<CoinInventory>();
+            }
+        }
+
         if (player != null)
         {
             Collider2D[] coinColliders = GetComponents<Collider2D>();
-            Collider2D[] playerColliders = player.GetComponents<Collider2D>();
+            Collider2D[] playerColliders = player.GetComponentsInChildren<Collider2D>();
 
             foreach (var coinCol in coinColliders)
             {
-                if (coinCol.isTrigger) continue; // Only ignore physical colliders
+                if (coinCol.isTrigger) continue;
 
                 foreach (var playerCol in playerColliders)
                 {
@@ -50,19 +57,34 @@ public class Coin : MonoBehaviour
         canBePickedUp = true;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if (!canBePickedUp) return;
 
-        if (collision.CompareTag("Player"))
+        if (collision.transform.root.CompareTag("Player"))
         {
-            CoinInventory coinInventory = collision.GetComponent<CoinInventory>();
-            if (coinInventory != null)
-            {
-                coinInventory.AddCoins(value);
-            }
-
-            Destroy(gameObject);
+            TryCollect();
         }
+    }
+
+    private void TryCollect()
+    {
+        if (coinInventory != null)
+        {
+            coinInventory.AddCoins(value);
+        }
+
+        // Disable collisions and visuals first
+        GetComponent<Collider2D>().enabled = false;
+        if (rb != null) rb.simulated = false;
+
+        // Delay destruction slightly to prevent stutter
+        StartCoroutine(DestroyDelayed());
+    }
+
+    private IEnumerator DestroyDelayed()
+    {
+        yield return null; // Wait 1 frame
+        Destroy(gameObject);
     }
 }

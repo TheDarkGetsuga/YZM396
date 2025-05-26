@@ -11,13 +11,25 @@ public class FlameParticle : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D other)
-    {
+    {   
         if (other.CompareTag("Enemy"))
         {
-            Enemy enemy = other.GetComponent<Enemy>();
+            // Try Enemy type first
+            Enemy enemy = other.GetComponentInParent<Enemy>();
             if (enemy != null)
             {
+                Debug.Log("Sending damage to Enemy: " + enemy.name);
                 enemy.TakeDamage(damage, transform.position, false, transform.position, false);
+                return;
+            }
+
+            // Try BasicEnemy type if Enemy wasn't found
+            BasicEnemy basicEnemy = other.GetComponentInParent<BasicEnemy>();
+            if (basicEnemy != null)
+            {
+                Debug.Log("Sending damage to BasicEnemy: " + basicEnemy.name);
+                basicEnemy.TakeDamage(damage, transform.position, false, transform.position, false);
+                return;
             }
         }
     }

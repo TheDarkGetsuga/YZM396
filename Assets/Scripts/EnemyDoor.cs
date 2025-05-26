@@ -4,9 +4,16 @@ using System.Collections.Generic;
 
 public class EnemyDoor : MonoBehaviour
 {
+    [Header("Enemy Tracking")]
     public List<GameObject> enemyList = new List<GameObject>();
+
+    [Header("Door Movement")]
     public float moveAmountY = 3f;
     public float moveSpeed = 5f;
+
+    [Header("Camera Tracking")]
+    [SerializeField] private bool trackDoor = true;
+    [SerializeField] private bool trackMovingDoor = true;
 
     private bool isOpen = false;
     private Vector3 closedPosition;
@@ -37,6 +44,12 @@ public class EnemyDoor : MonoBehaviour
     private void OpenDoor()
     {
         isOpen = true;
+
+        if (trackDoor && CameraFollow.Instance != null)
+        {
+            CameraFollow.Instance.FocusTemporarilyOnTarget(transform, 1f, 5f, trackMovingDoor);
+        }
+
         if (moveCoroutine != null)
             StopCoroutine(moveCoroutine);
         moveCoroutine = StartCoroutine(MoveDoor(openPosition));

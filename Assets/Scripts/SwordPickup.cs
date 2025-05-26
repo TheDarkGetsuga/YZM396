@@ -32,29 +32,22 @@ public class SwordPickup : MonoBehaviour
         }
     }
 
-    private void PickupSword()
+    private void PickupSword() //this is on SwordPickup.cs which gives the swords to the player in-game
     {
-        // Find the SwordSwing script on the Sword child object of the Player
         SwordSwing swordSwing = GameObject.FindGameObjectWithTag("Player").transform.Find("Sword").GetComponent<SwordSwing>();
         if (swordSwing != null)
         {
-            Debug.Log("SwordSwing found on Sword (child of Player).");
+            swordSwing.AddSwordToInventory(swordToGive);
 
-            // Add the sword to the inventory
-            swordSwing.AddSwordToInventory(swordToGive); 
-            Debug.Log($"Sword {swordToGive.swordName} added to inventory.");
+            // Only add to save if not already there
+            if (!SaveManager.Instance.currentSave.obtainedSwordNames.Contains(swordToGive.swordName))
+            {
+                SaveManager.Instance.currentSave.obtainedSwordNames.Add(swordToGive.swordName);
+                SaveManager.Instance.SaveGame(); // ✅ Correct way to call SaveGame
+            }
 
-            // Equip the newly added sword
             swordSwing.EquipSword(swordSwing.inventory.Count - 1);
-            Debug.Log($"Sword {swordToGive.swordName} equipped.");
-
-            // Destroy the pickup object
-            Destroy(gameObject); 
-            Debug.Log("Sword pickup destroyed.");
-        }
-        else
-        {
-            Debug.LogError("SwordSwing script not found on Sword (child of Player).");
+            Destroy(gameObject);
         }
     }
 }

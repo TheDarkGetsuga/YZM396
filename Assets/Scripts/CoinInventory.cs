@@ -2,16 +2,20 @@ using UnityEngine;
 
 public class CoinInventory : MonoBehaviour
 {
-    public int coinCount = 0; // The total number of coins the player has
+    public int coinCount = 0;
 
-    // Method to add coins
+    private void Start()
+    {
+        coinCount = SaveManager.Instance.GetGold();
+    }
+
     public void AddCoins(int amount)
     {
         coinCount += amount;
+        SaveManager.Instance.SetGold(coinCount);
         Debug.Log($"Added {amount} coins. Total coins: {coinCount}");
     }
 
-    // Method to get the current number of coins
     public int GetCoinCount()
     {
         return coinCount;

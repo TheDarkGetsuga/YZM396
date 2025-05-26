@@ -21,6 +21,13 @@ public class SwordSwing : MonoBehaviour
     private WeaponHitbox weaponHitbox;
     public PlayerHP playerHP;
     public GameObject flameParticlePrefab;
+    public GameObject getsugatenshoPrefab;
+    public GameObject zangerinFireballPrefab;
+    public GameObject shadowcloakPrefab;
+    public GameObject soulbinderPrefab;
+    public GameObject soulswordProjectilePrefab;
+    public GameObject vortexPrefab;
+    public GameObject titanfallCleavePrefab;
     public Transform spawnPoint;
     private bool isFacingRight = true;
     private bool isCastingMagic = false;
@@ -31,13 +38,17 @@ public class SwordSwing : MonoBehaviour
     public AudioClip[] swingSoundList4;
 
     public GameObject attackArea;
-
+    [SerializeField] private float getsugaOffsetX = 1f;
+    [SerializeField] private float getsugaOffsetY = 0f;
+    private List<SpriteRenderer> allRenderers = new List<SpriteRenderer>();
+    public PlayerMovement playerMovement;
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
         animator = GetComponent<Animator>();
         weaponHitbox = transform.Find("Sword").GetComponent<WeaponHitbox>();
+        allRenderers.AddRange(GetComponentsInChildren<SpriteRenderer>());
 
         if (inventory.Count > 0)
         {
@@ -121,9 +132,41 @@ public class SwordSwing : MonoBehaviour
         StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));
         StartCoroutine(PlayRandomFromList(swingSoundList4, 0.5f));
     }
-
+    private void SetPlayerTransparency(float alpha)
+    {
+        foreach (var renderer in allRenderers)
+        {
+            if (renderer != null)
+            {
+                Color c = renderer.color;
+                c.a = alpha;
+                renderer.color = c;
+            }
+        }
+    }
     void ResetCombo() => comboStep = 0;
+    public void LoadSwordsFromSave() //this is on SwordSwing.cs
+    {
+        inventory.Clear();
 
+        foreach (string savedSwordName in SaveManager.Instance.currentSave.obtainedSwordNames)
+        {
+            SwordData sword = Resources.Load<SwordData>("Swords/" + savedSwordName);
+            if (sword != null)
+            {
+                inventory.Add(sword);
+            }
+            else
+            {
+                Debug.LogWarning($"SwordData not found in Resources/Swords/ for name: {savedSwordName}");
+            }
+        }
+
+        if (inventory.Count > 0)
+        {
+            EquipSword(0);
+        }
+    }
     public void EquipSword(int index)
     {
         if (index >= 0 && index < inventory.Count)
@@ -179,15 +222,83 @@ public class SwordSwing : MonoBehaviour
 
         Debug.Log($"Triggering magic attack with {currentSword.swordName}.");
 
-        if (currentSword.swordName == "Spear of Longinus")
-        {   
+        if (currentSword.swordName == "SpearofLonginus")
+        {
             StartCoroutine(PlayRandomFromList(swingSoundList1, 0.5f));
             StartCoroutine(PlayRandomFromList(swingSoundList2, 0.5f));
             StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));
             StartCoroutine(PlayRandomFromList(swingSoundList4, 0.5f));
             animator.SetTrigger("SpearOfLonginusAttack");
         }
-        else if (currentSword.swordName == "The Trailblaze")
+        else if (currentSword.swordName == "AdventurersBlade")
+        {
+            StartCoroutine(PlayRandomFromList(swingSoundList1, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList2, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList4, 0.5f));
+            animator.SetTrigger("AdventurersBladeAttack");
+        }
+        else if (currentSword.swordName == "Kingslayer")
+        {
+            StartCoroutine(PlayRandomFromList(swingSoundList1, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList2, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList4, 0.5f));
+            animator.SetTrigger("Zangerin");
+            StartCoroutine(FinishCastingAfter(2f));
+        }
+        else if (currentSword.swordName == "Shadowrend")
+        {
+            StartCoroutine(PlayRandomFromList(swingSoundList1, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList2, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList4, 0.5f));
+            animator.SetTrigger("Shadowcast");
+
+            GameObject cloak = Instantiate(shadowcloakPrefab, transform.root.position, Quaternion.identity, transform.root);
+            cloak.transform.localPosition = Vector3.zero;
+
+            StartCoroutine(FinishCastingAfter(2f));
+        }
+        else if (currentSword.swordName == "Soulbinder")
+        {
+            StartCoroutine(PlayRandomFromList(swingSoundList1, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList2, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList4, 0.5f));
+            animator.SetTrigger("Shadowcast");
+            StartCoroutine(SoulbinderEffect());
+        }
+        else if (currentSword.swordName == "TheWarpath")
+        {
+            StartCoroutine(PlayRandomFromList(swingSoundList1, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList2, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList4, 0.5f));
+            animator.SetTrigger("WarpathSwordDance");
+            StartCoroutine(FinishCastingAfter(2f));
+        }
+        else if (currentSword.swordName == "WanderersRepose")
+        {
+            StartCoroutine(PlayRandomFromList(swingSoundList1, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList2, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList4, 0.5f));
+            animator.SetTrigger("Shadowcast");
+            Vector2 spawnPosition = transform.position + transform.right * 2f;
+            Instantiate(vortexPrefab, spawnPosition, Quaternion.identity);
+            StartCoroutine(FinishCastingAfter(2f));
+        }
+        else if (currentSword.swordName == "Dauntless")
+        {
+            StartCoroutine(PlayRandomFromList(swingSoundList1, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList2, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList4, 0.5f));
+            animator.SetTrigger("TitanfallCleave"); 
+            StartCoroutine(FinishCastingAfter(2f));
+        }
+        else if (currentSword.swordName == "TheTrailblaze")
         {
             isCastingMagic = true;
 
@@ -202,8 +313,126 @@ public class SwordSwing : MonoBehaviour
 
             StartCoroutine(FinishCastingAfter(2f));
         }
+        else if (currentSword.swordName == "Shingetsu")
+        {
+            isCastingMagic = true;
+            animator.SetTrigger("Getsugatensho");
+
+            StartCoroutine(PlayRandomFromList(swingSoundList1, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList2, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));
+            StartCoroutine(PlayRandomFromList(swingSoundList4, 0.5f));
+
+            StartCoroutine(SpawnGetsugaAfterDelay(0.3f)); // Wait 0.2s before firing
+            StartCoroutine(FinishCastingAfter(1.5f));
+        }
+
+        else
+        {
+            Debug.LogWarning($"No magic attack defined for {currentSword.swordName}.");
+        }
+    }
+    public void TriggerTitanfallCleave()
+    {
+        if (titanfallCleavePrefab == null)
+        {
+            Debug.LogWarning("Titanfall Cleave prefab not assigned!");
+            return;
+        }
+
+        Transform player = transform.root;
+        GameObject cleave = Instantiate(titanfallCleavePrefab, player.position, Quaternion.identity, player);
+
+        // Flip based on player direction
+        Vector3 scale = cleave.transform.localScale;
+        if (player.localScale.x < 0)
+            scale.x *= -1;
+        cleave.transform.localScale = scale;
+
+        // Slight forward offset
+        cleave.transform.localPosition += new Vector3(1f * Mathf.Sign(player.localScale.x), -0.5f, 0f);
+    }
+    public void SpawnSoulswordFromTip()
+    {
+        if (spawnPoint == null || soulswordProjectilePrefab == null)
+        {
+            Debug.LogWarning("Sword Tip or Soulsword projectile prefab not assigned.");
+            return;
+        }
+
+        // Spawn projectile at the tip's position and rotation
+        GameObject projectile = Instantiate(
+            soulswordProjectilePrefab,
+            spawnPoint.position,
+            spawnPoint.rotation
+        );
+
+        // Copy scale
+        projectile.transform.localScale = spawnPoint.lossyScale;
+
+        // Optional: If your projectile has a SwordTip inside that needs to match transforms,
+        // find it and copy the same transform data:
+        Transform projectileTip = projectile.transform.Find("SwordTip");
+        if (projectileTip != null)
+        {
+            projectileTip.position = spawnPoint.position;
+            projectileTip.rotation = spawnPoint.rotation;
+            projectileTip.localScale = spawnPoint.lossyScale;
+        }
+    }
+    public void SpawnZangerinFireballFromEvent()
+    {
+        if (currentSword == null || currentSword.swordName != "Kingslayer") return;
+
+        // Spawn at the sword tip
+        Vector3 spawnPos = spawnPoint.position;
+
+        GameObject fireball = Instantiate(zangerinFireballPrefab, spawnPos, Quaternion.identity);
+    }
+    IEnumerator SoulbinderEffect()
+    {
+        // DO NOT set isCastingMagic to true here, so attacking is still allowed
+
+        // Make the player 65% transparent
+        playerMovement.Speed = 12f;
+        Color originalColor = spriteRenderer.color;
+        Color transparentColor = originalColor;
+        transparentColor.a = 0.35f;
+        SetPlayerTransparency(0.35f);
+        spriteRenderer.color = transparentColor;
+
+        // Make player immune to damage
+        playerHP.SetInvincible(true);
+
+        // Spawn visual-only Soulbinder aura (like Shadowcloak)
+        GameObject soulbinderEffect = Instantiate(soulbinderPrefab, transform.root.position, Quaternion.identity, transform.root);
+        soulbinderEffect.transform.localPosition = Vector3.zero;
+
+        yield return new WaitForSeconds(10f); // Duration of effect
+
+        // Revert transparency and invincibility
+        spriteRenderer.color = originalColor;
+        playerHP.SetInvincible(false);
+        SetPlayerTransparency(1f);
+        animator.SetTrigger("ReturnToIdle");
+        playerMovement.Speed = 8f;
+
+        // Clean up effect if needed (optional, depends on prefab behavior)
+        Destroy(soulbinderEffect);
     }
 
+    private IEnumerator SpawnGetsugaAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        float directionMultiplier = isFacingRight ? 1f : -1f;
+        Vector3 offset = new Vector3(getsugaOffsetX * directionMultiplier, getsugaOffsetY, 0f);
+        Vector3 spawnPos = spawnPoint.position + offset;
+
+        GameObject projectile = Instantiate(getsugatenshoPrefab, spawnPos, Quaternion.identity);
+        Getsugatensho getsuga = projectile.GetComponent<Getsugatensho>();
+        getsuga.SetDirection(isFacingRight);
+    }
     IEnumerator FinishCastingAfter(float seconds)
     {
         yield return new WaitForSeconds(seconds);

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class AudioManager : MonoBehaviour
 {
@@ -7,18 +8,18 @@ public class AudioManager : MonoBehaviour
     private AudioSource audioSource;
 
     private static AudioManager instance;
+    private int currentlyPlayingIndex = -1; // Tracks which music clip is playing
 
     void Awake()
     {
-        // Ensure there is only one instance of AudioManager (persistent across scenes)
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject); // Don't destroy this object when changing scenes
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(gameObject); // Destroy duplicates
+            Destroy(gameObject);
         }
 
         audioSource = GetComponent<AudioSource>();
@@ -26,63 +27,69 @@ public class AudioManager : MonoBehaviour
 
     void Start()
     {
-        // Play the appropriate music based on the current scene
         PlayMusicForCurrentScene();
     }
 
     void OnLevelWasLoaded(int level)
     {
-        // Play the music when a new level is loaded
+        currentlyPlayingIndex = -1; // ✅ Reset when loading a new scene
         PlayMusicForCurrentScene();
     }
 
     private void PlayMusicForCurrentScene()
     {
-        // Get the scene's name
         string sceneName = SceneManager.GetActiveScene().name;
 
-        if (sceneName == "Level1")
+        if (sceneName == "Menu") PlayMusicClip(15);
+        else if (sceneName == "Level1") PlayMusicClip(1);
+        else if (sceneName == "Level2") PlayMusicClip(2);
+        else if (sceneName == "Level3") PlayMusicClip(3);
+        else if (sceneName == "Level4") PlayMusicClip(4);
+        else if (sceneName == "Level5") PlayMusicClip(6);
+        else if (sceneName == "Level6") PlayMusicClip(7);
+        else if (sceneName == "Level7") PlayMusicClip(8);
+        else if (sceneName == "Level8") PlayMusicClip(9);
+        else if (sceneName == "Level9") PlayMusicClip(11);
+        else if (sceneName == "Level10") PlayMusicClip(11);
+        else if (sceneName == "Level11") PlayMusicClip(11);
+        else if (sceneName == "Level12") PlayMusicClip(11);
+        else if (sceneName == "Level13") PlayMusicClip(13);
+        else if (sceneName == "Credits") PlayMusicClip(0);
+    }
+    public void FadeOutMusic(float duration)
+    {
+    StartCoroutine(FadeOutCoroutine(duration));
+    }
+
+    private IEnumerator FadeOutCoroutine(float duration)
+    {
+        float startVolume = audioSource.volume;
+        float t = 0f;
+        while (t < duration)
         {
-            audioSource.clip = levelMusicClips[1];
+            t += Time.deltaTime;
+            audioSource.volume = Mathf.Lerp(startVolume, 0f, t / duration);
+            yield return null;
+        }
+        audioSource.Stop();
+        audioSource.volume = startVolume; // Reset volume for next scene
+    }
+    public void PlayMusicClip(int index)
+    {
+        // Ignore if the requested clip is already playing
+        if (index == currentlyPlayingIndex)
+            return;
+
+        if (index >= 0 && index < levelMusicClips.Length)
+        {
+            audioSource.clip = levelMusicClips[index];
             audioSource.loop = true;
             audioSource.Play();
+            currentlyPlayingIndex = index;
         }
-        if (sceneName == "Level2")
+        else
         {
-            audioSource.clip = levelMusicClips[2];
-            audioSource.loop = true;
-            audioSource.Play();
+            Debug.LogWarning("Music clip index out of range: " + index);
         }
-        if (sceneName == "Level3")
-        {
-            audioSource.clip = levelMusicClips[3];
-            audioSource.loop = true;
-            audioSource.Play();
-        }
-        if (sceneName == "Level4")
-        {
-            audioSource.clip = levelMusicClips[4];
-            audioSource.loop = true;
-            audioSource.Play();
-        }
-        if (sceneName == "Level5")
-        {
-            audioSource.clip = levelMusicClips[5];
-            audioSource.loop = true;
-            audioSource.Play();
-        }
-        if (sceneName == "Level6")
-        {
-            audioSource.clip = levelMusicClips[6];
-            audioSource.loop = true;
-            audioSource.Play();
-        }
-        if (sceneName == "Level7")
-        {
-            audioSource.clip = levelMusicClips[7];
-            audioSource.loop = true;
-            audioSource.Play();
-        }
-        
     }
 }

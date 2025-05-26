@@ -35,6 +35,7 @@ public class WeaponHitbox : MonoBehaviour
         if (enemy != null)
         {
             enemy.TakeDamage(baseDamage, hitPoint, isWeakPoint, source, true);
+            HitstopManager.Instance.TriggerHitstop(0.1f);
             return;
         }
 
@@ -43,6 +44,7 @@ public class WeaponHitbox : MonoBehaviour
         if (basicEnemy != null)
         {
             basicEnemy.TakeDamage(baseDamage, hitPoint, isWeakPoint, source, true);
+            HitstopManager.Instance.TriggerHitstop(0.01f);
         }
     }
 }

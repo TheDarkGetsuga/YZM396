@@ -5,8 +5,8 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     private float horizontal;
-    private float speed = 8f;
-    private float jumpingPower = 16f;
+    [SerializeField] public float speed = 8f;
+    [SerializeField] public float jumpingPower = 16f;
     private bool isFacingRight = true;
     private bool canDash = true;
     private bool isDashing;
@@ -153,6 +153,11 @@ public class PlayerMovement : MonoBehaviour
             newVerticalSpeed = Mathf.Clamp(newVerticalSpeed, -maxVerticalSpeed, maxVerticalSpeed);
             rb.linearVelocity = new Vector2(currentSpeed, newVerticalSpeed);
         }
+    }
+    public float Speed
+    {
+        get => speed;
+        set => speed = value;
     }
 
     private bool IsGrounded()
