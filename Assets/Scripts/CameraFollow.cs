@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-
+// https://www.youtube.com/watch?v=ZBj3LBA2vUY
 public class CameraFollow : MonoBehaviour
 {
     private Vector3 baseOffset = new Vector3(0f, 1f, -10f);
@@ -56,8 +56,6 @@ public class CameraFollow : MonoBehaviour
             {
                 targetPosition.y += fallOffsetY;
             }
-
-            // Screen shake logic (unscaled time)
             if (shakeDuration > 0)
             {
                 targetPosition.x += Random.Range(-shakeStrengthX, shakeStrengthX);
@@ -145,6 +143,7 @@ public class CameraFollow : MonoBehaviour
 
     public void ScreenShake(float xStrength, float yStrength, float duration)
     {
+        //bi daha screenshake yazanı siksinler https://github.com/andersonaddo/EZ-Camera-Shake-Unity
         shakeStrengthX = xStrength;
         shakeStrengthY = yStrength;
         shakeDuration = duration;

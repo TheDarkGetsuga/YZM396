@@ -1,7 +1,7 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
-
+//player gravity should be set to 4x or this doesnt feel right
 public class PlayerMovement : MonoBehaviour
 {
     private float horizontal;

@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class KeyPickup : MonoBehaviour
 {
-    public string keyName; // Example: "BronzeKey", "RedKey"
-    public PlayerKeyInventory keyInventory;  // Reference to PlayerKeyInventory component
+    public string keyName;
+    public PlayerKeyInventory keyInventory;
 
     private bool playerInRange = false;
 

@@ -58,13 +58,12 @@ public class PlayerHP : MonoBehaviour
         HP = maxHP;
         mana = 0;
         lastCheckpointPosition = transform.position; // Default to spawn point
-        // Find DamageLight by name in children
         Transform damageLightTransform = transform.Find("DamageLight");
         if (damageLightTransform != null)
         {
             damageLight = damageLightTransform.GetComponent<Light2D>();
             if (damageLight != null)
-                damageLight.enabled = false; // Off by default
+                damageLight.enabled = false;
         }
         else
         {
@@ -108,7 +107,7 @@ public class PlayerHP : MonoBehaviour
         Debug.Log("Player died. Respawning at checkpoint.");
         if (SaveManager.Instance != null && SaveManager.Instance.currentSave != null)
         {
-            SaveManager.Instance.currentSave.playerDeaths += 1;
+            SaveManager.Instance.currentSave.playerDeaths += 1; //log death
             SaveManager.Instance.SaveGame();
         }
         StartCoroutine(Respawn());
@@ -192,7 +191,7 @@ public class PlayerHP : MonoBehaviour
         return false;
     }
 
-    private void OnGUI()
+    private void OnGUI() //this was supposed to be temporary but we ball
     {
         int screenWidth = Screen.width;
         int screenHeight = Screen.height;

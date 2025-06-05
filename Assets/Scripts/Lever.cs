@@ -15,14 +15,12 @@ public class Lever : MonoBehaviour
 
     private void Awake()
     {
-        // Try to get an existing AudioSource or add one
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
 
-        // Set audio to 2D
         audioSource.spatialBlend = 0f;
         audioSource.playOnAwake = false;
     }
@@ -39,12 +37,11 @@ public class Lever : MonoBehaviour
     {
         isActivated = !isActivated;
 
-        // Flip the lever's visual (scaleX: 1 = off, -1 = on)
+        //scale should be 1 by default 
         Vector3 newScale = transform.localScale;
         newScale.x = isActivated ? -1 : 1;
         transform.localScale = newScale;
 
-        // Play lever sound through 2D AudioSource
         if (leverSound != null)
         {
             audioSource.volume = soundVolume;
@@ -56,7 +53,7 @@ public class Lever : MonoBehaviour
         {
             door.CheckLevers();
 
-            // Smooth camera pan to this door
+            // Smooth camera pan
             if (CameraFollow.Instance != null && trackDoors)
             {
                 CameraFollow.Instance.FocusTemporarilyOnTarget(door.transform, 1f, 5f, trackMovingDoor);

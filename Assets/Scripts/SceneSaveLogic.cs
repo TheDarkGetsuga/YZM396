@@ -34,7 +34,7 @@ public class SceneSaveLogic : MonoBehaviour
 
         if (saveGold)
         {
-            SaveManager.Instance.SetGold(SaveManager.Instance.GetGold()); // Triggers save with gold
+            SaveManager.Instance.SetGold(SaveManager.Instance.GetGold()); //log golds
             Debug.Log("[SceneSaveLogic] Gold saved.");
         }
 

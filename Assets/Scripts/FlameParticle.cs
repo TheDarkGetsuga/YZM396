@@ -10,7 +10,7 @@ public class FlameParticle : MonoBehaviour
         Destroy(gameObject, lifetime);
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter2D(Collider2D other) //In hindsight maybe i shouldnt have two seperate fucking enemy scripts but it works
     {   
         if (other.CompareTag("Enemy"))
         {

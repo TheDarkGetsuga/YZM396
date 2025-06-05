@@ -22,7 +22,6 @@ public class Coin : MonoBehaviour
 
         Invoke(nameof(EnablePickup), pickupDelay);
 
-        // Cache player and inventory only once
         if (player == null)
         {
             player = GameObject.FindGameObjectWithTag("Player");
@@ -67,24 +66,20 @@ public class Coin : MonoBehaviour
         }
     }
 
-    private void TryCollect()
+    private void TryCollect() //this lags too much
     {
         if (coinInventory != null)
         {
             coinInventory.AddCoins(value);
         }
-
-        // Disable collisions and visuals first
         GetComponent<Collider2D>().enabled = false;
         if (rb != null) rb.simulated = false;
-
-        // Delay destruction slightly to prevent stutter
-        StartCoroutine(DestroyDelayed());
+        StartCoroutine(DestroyDelayed()); //todo: use pooling
     }
 
     private IEnumerator DestroyDelayed()
     {
-        yield return null; // Wait 1 frame
+        yield return null; // 1 frame delay here
         Destroy(gameObject);
     }
 }

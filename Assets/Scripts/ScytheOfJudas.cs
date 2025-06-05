@@ -3,19 +3,18 @@ using UnityEngine;
 public class ScytheOfJudas : MonoBehaviour
 {
     [Header("Rotation Settings")]
-    public float startSpeed = 900f;    // Initial rotation speed (deg/sec)
-    public float normalSpeed = 200f;   // Final rotation speed (deg/sec)
-    public float speedDecayDuration = 1f; // Duration in seconds to slow down
+    public float startSpeed = 900f;
+    public float normalSpeed = 200f;
+    public float speedDecayDuration = 1f;
 
     [Header("Damage Settings")]
     public int damageAmount = 30;
 
-    private float angle;              // Current orbit angle in degrees
-    private float orbitRadius;        // Distance from player (local)
-    private float rotationSpeed;      // Current rotation speed
-    private float decayTimer = 0f;    // Timer to track decay progress
+    private float angle; 
+    private float orbitRadius;
+    private float rotationSpeed;
+    private float decayTimer = 0f;
 
-    // Called by SwordSwing.cs to set starting position on the orbit
     public void SetInitialOrbit(float initialAngle, float radius)
     {
         angle = initialAngle;
@@ -33,8 +32,7 @@ public class ScytheOfJudas : MonoBehaviour
         {
             decayTimer += Time.deltaTime;
             float t = Mathf.Clamp01(decayTimer / speedDecayDuration);
-
-            // Use a smooth step for steep but smooth decay
+            //Smoothstep tweening
             t = Mathf.SmoothStep(0f, 1f, t);
 
             rotationSpeed = Mathf.Lerp(startSpeed, normalSpeed, t);
@@ -43,8 +41,6 @@ public class ScytheOfJudas : MonoBehaviour
         {
             rotationSpeed = normalSpeed;
         }
-
-        // Increase angle by current rotation speed
         angle += rotationSpeed * Time.deltaTime;
         if (angle >= 360f)
             angle -= 360f;
@@ -55,8 +51,6 @@ public class ScytheOfJudas : MonoBehaviour
     {
         float rad = angle * Mathf.Deg2Rad;
         Vector3 offset = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0f) * orbitRadius;
-
-        // Set world position relative to player position + offset
         if (transform.parent != null)
         {
             transform.position = transform.parent.position + offset;
@@ -66,10 +60,10 @@ public class ScytheOfJudas : MonoBehaviour
             transform.position = offset;
         }
 
-        // Calculate rotation so scythe tip points outward (away from player)
+        // Note to self, should point outwards from the center of rotation
         float zRotation = angle - 90f;
 
-        // Apply world rotation (not local)
+        // World rotation shouldn't be local
         transform.rotation = Quaternion.Euler(0f, 0f, zRotation);
     }
     void OnTriggerEnter2D(Collider2D other)

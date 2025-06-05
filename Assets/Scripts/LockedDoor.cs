@@ -5,7 +5,7 @@ public class LockedDoor : MonoBehaviour
     public string requiredKeyName;
     public float moveAmountY = 3f;
     public float moveSpeed = 5f;
-    public PlayerKeyInventory keyInventory; // ← Assign this in the Inspector
+    public PlayerKeyInventory keyInventory;
 
     private bool isOpen = false;
     private Vector3 closedPosition;

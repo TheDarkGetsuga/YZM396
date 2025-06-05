@@ -27,10 +27,8 @@ public class WeaponHitbox : MonoBehaviour
         if (!canHit) return;
 
         Vector3 hitPoint = collision.ClosestPoint(transform.position);
-        Vector3 source = transform.root.position; // Assuming root is the player
+        Vector3 source = transform.root.position;
         bool isWeakPoint = collision.gameObject.name == "WeakPoint";
-
-        // Try Enemy first
         Enemy enemy = collision.GetComponentInParent<Enemy>();
         if (enemy != null)
         {
@@ -38,8 +36,6 @@ public class WeaponHitbox : MonoBehaviour
             HitstopManager.Instance.TriggerHitstop(0.1f);
             return;
         }
-
-        // Then try BasicEnemy
         BasicEnemy basicEnemy = collision.GetComponentInParent<BasicEnemy>();
         if (basicEnemy != null)
         {

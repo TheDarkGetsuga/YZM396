@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class InstantDeathTrigger : MonoBehaviour
 {
-    public int deathDamage = 500;
+    public int deathDamage = 500; //should change this to scale with max hp later on
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -11,7 +11,6 @@ public class InstantDeathTrigger : MonoBehaviour
             PlayerHP playerHP = other.GetComponent<PlayerHP>();
             if (playerHP == null)
             {
-                // Try to find on children (like BreakableObjectCheck)
                 playerHP = other.GetComponentInParent<PlayerHP>();
             }
 

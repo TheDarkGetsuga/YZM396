@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Rendering.Universal;
-
+//[Greenie] I had to fucking dupe the enemy script to this, the other one is bugged please help
 public class BasicEnemy : MonoBehaviour
 {
     public enum EnemyType { Grounded, Slime }
@@ -121,7 +121,7 @@ public class BasicEnemy : MonoBehaviour
         attackStateTimer = 0f;
         Debug.Log("Enemy has detected the player and entered attack state.");
     }
-    public bool IsInAttackState()   
+    public bool IsInAttackState()
     {
         return isInAttackState;
     }
@@ -151,7 +151,7 @@ public class BasicEnemy : MonoBehaviour
         }
     }
 
-    void UpdateSlimeJumpAnimations()
+    void UpdateSlimeJumpAnimations() //fix this later
     {
         if (isDead) return;
         bool isGrounded = Mathf.Abs(rb.linearVelocity.y) < 0.01f;

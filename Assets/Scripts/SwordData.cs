@@ -14,10 +14,10 @@ public class SwordData : ScriptableObject
     public AudioClip[] swingSounds;
     public WeaponType weaponType = WeaponType.Sword;
 
-    [Tooltip("Prefix used in Animator triggers and states. Example: Sword or Spear")]
+    [Tooltip("Animator Prefix")]
     public string animationPrefix = "Sword";
 
-    [Tooltip("How many hits are in this weapon's combo chain")]
+    [Tooltip("Max Combo Chain")]
     [Range(1, 10)]
     public int comboLength = 5;
 

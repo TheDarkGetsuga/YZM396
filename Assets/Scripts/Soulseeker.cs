@@ -46,7 +46,6 @@ public class Soulseeker : MonoBehaviour
     {
         float elapsed = 0f;
 
-        // Outward movement phase
         while (elapsed < outwardDuration)
         {
             rb.linearVelocity = moveDirection * outwardSpeed;
@@ -100,7 +99,6 @@ public class Soulseeker : MonoBehaviour
             int index = Random.Range(0, impactSounds.Length);
             PlaySoundAtPosition(impactSounds[index], transform.position, volume);
         }
-        // Apply damage to the player
         if (other.gameObject.CompareTag("Player"))
         {
             PlayerHP hp = other.gameObject.GetComponent<PlayerHP>();

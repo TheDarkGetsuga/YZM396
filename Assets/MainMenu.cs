@@ -31,8 +31,6 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
-        Screen.SetResolution(3840, 2160, FullScreenMode.FullScreenWindow, 60);
-
         if (!Directory.Exists(SaveFolderPath))
             Directory.CreateDirectory(SaveFolderPath);
 
@@ -212,6 +210,5 @@ public class MainMenu : MonoBehaviour
     private class SaveData
     {
         public string sceneName;
-        // Add other fields as needed
     }
 }

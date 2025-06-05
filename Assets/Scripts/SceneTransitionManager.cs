@@ -91,10 +91,9 @@ public class SceneTransitionManager : MonoBehaviour
         AudioManager audioManager = Object.FindAnyObjectByType<AudioManager>();
         if (audioManager != null)
         {
-            audioManager.FadeOutMusic(1f); // fades out over 1 second
+            audioManager.FadeOutMusic(1f);
         }
 
-        // Set initial colors
         Color originalTextColor = quoteText.color;
         Color transparentTextColor = new Color(originalTextColor.r, originalTextColor.g, originalTextColor.b, 0f);
         quoteText.color = transparentTextColor;
@@ -105,7 +104,6 @@ public class SceneTransitionManager : MonoBehaviour
 
         quoteText.text = quote;
 
-        // Fade in both text and panel
         float t = 0f;
         while (t < 1f)
         {
@@ -115,10 +113,9 @@ public class SceneTransitionManager : MonoBehaviour
             yield return null;
         }
 
-        Debug.Log("Quote displayed, holding on screen for 4 seconds.");
+        Debug.Log("Quote displayed, holding on screen for 8 seconds.");
         yield return new WaitForSeconds(8f);
 
-        // Fade out only the text
         t = 1f;
         while (t > 0f)
         {
@@ -127,7 +124,6 @@ public class SceneTransitionManager : MonoBehaviour
             yield return null;
         }
 
-        // Keep panel fully opaque
         blackPanel.color = originalPanelColor;
 
         Debug.Log("Loading scene asynchronously: " + sceneName);

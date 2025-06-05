@@ -35,7 +35,7 @@ public class Shadowcloak : MonoBehaviour
         }
     }
 
-    void ApplyDamage()
+    void ApplyDamage() //Note: The blood effects for this attack appears on the player instead of the enemies for some reason, find a fix later
     {
         foreach (var enemyCollider in enemiesInRange)
         {

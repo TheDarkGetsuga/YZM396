@@ -9,11 +9,11 @@ public class SceneLoaderTrigger : MonoBehaviour
     public string sceneToLoad = "Level2";
 
     [TextArea(2, 5)]
-    public string quote; // Leave blank if you don't want a cutscene
+    public string quote;
 
     [Header("Boss Death Activation")]
     public bool bossDeathActivation = false;
-    public List<GameObject> bossEnemies; // Support multiple boss enemies
+    public List<GameObject> bossEnemies;
 
     private bool hasTriggered = false;
 
@@ -38,9 +38,8 @@ public class SceneLoaderTrigger : MonoBehaviour
 
     private IEnumerator WaitForAllBossesDead()
     {
-        // Wait until all boss enemies are destroyed (null)
         yield return new WaitUntil(() => bossEnemies.TrueForAll(boss => boss == null));
-        yield return new WaitForSeconds(1f); // Optional delay
+        yield return new WaitForSeconds(1f);
         if (!hasTriggered)
         {
             hasTriggered = true;
@@ -63,7 +62,7 @@ public class SceneLoaderTrigger : MonoBehaviour
             else
             {
                 Debug.LogWarning("SceneTransitionManager.Instance is null, loading scene directly.");
-                SceneManager.LoadScene(sceneToLoad); // fallback
+                SceneManager.LoadScene(sceneToLoad);
             }
         }
         else

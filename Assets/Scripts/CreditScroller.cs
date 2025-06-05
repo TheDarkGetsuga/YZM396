@@ -12,7 +12,7 @@ public class CreditsScroller : MonoBehaviour
     public Image fadeImage;
     public string menuSceneName = "Menu";
 
-    public float skipDelay = 3f; // Delay before skipping is allowed
+    public float skipDelay = 3f;
     private bool fading = false;
     private float startY;
     public float endY;
@@ -30,15 +30,13 @@ public class CreditsScroller : MonoBehaviour
 
         timer += Time.deltaTime;
 
-        creditsText.anchoredPosition += Vector2.up * -scrollSpeed * Time.deltaTime;
+        creditsText.anchoredPosition += Vector2.up * -scrollSpeed * Time.deltaTime; //this is such a caveman code way of doing it but fuck it, it works
 
         if (creditsText.anchoredPosition.y >= endY)
         {
             StartCoroutine(FadeToBlackAndReturn());
             fading = true;
         }
-
-        // Skip if any key is pressed after skipDelay
         if (timer >= skipDelay && Input.anyKeyDown)
         {
             StartCoroutine(FadeToBlackAndReturn());
@@ -46,7 +44,7 @@ public class CreditsScroller : MonoBehaviour
         }
     }
 
-    private IEnumerator FadeToBlackAndReturn()
+    private IEnumerator FadeToBlackAndReturn() //BLEACH REFERENCE!?!? https://youtu.be/YKLijZfJVzs?si=AWDxtwmUC4J0YCG4
     {
         yield return new WaitForSeconds(delayBeforeFade);
 

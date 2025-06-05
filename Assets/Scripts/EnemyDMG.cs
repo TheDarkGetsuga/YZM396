@@ -68,7 +68,7 @@ public class EnemyDMG : MonoBehaviour
 
         if (enemyScript == null)
             return;
-
+        //cavemen code time, yanderedev would be proud
         if (useFireballs && fireballPrefab != null)
             StartCoroutine(FireballRoutine());
 
@@ -203,7 +203,7 @@ public class EnemyDMG : MonoBehaviour
         }
     }
 
-    private IEnumerator SpiralSpiritLanceRoutine()
+    private IEnumerator SpiralSpiritLanceRoutine() //okay this does not work at all, dont use it
     {
         while (true)
         {
@@ -285,7 +285,7 @@ public class EnemyDMG : MonoBehaviour
         }
     }
 
-    private void SpawnFireballAtPlayer()
+    private void SpawnFireballAtPlayer() //I CAST FIREBALL
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null || fireballPrefab == null)
@@ -331,3 +331,5 @@ public class EnemyDMG : MonoBehaviour
         return false;
     }
 }
+//TODO Move List: The final boss fight should have dark lance and gluttony for projectiles 
+//https://youtu.be/XNxw4x7B1NU?si=vuLywtf9Bv9bHzyG

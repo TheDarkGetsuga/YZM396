@@ -21,7 +21,7 @@ public class HitstopManager : MonoBehaviour
             StartCoroutine(DoHitstop(duration));
     }
 
-    private IEnumerator DoHitstop(float duration)
+    private IEnumerator DoHitstop(float duration) //siktir et güzel durmuyo
     {
         //isHitstopActive = true;
         //Time.timeScale = 0f;

@@ -5,7 +5,7 @@ public class Door : MonoBehaviour
 {
     public Lever[] requiredLevers;
     public float moveAmountY = 3f;
-    public float moveSpeed = 5f; // How fast the door moves
+    public float moveSpeed = 5f;
 
     private Vector3 closedPosition;
     private Vector3 openPosition;
@@ -58,7 +58,7 @@ public class Door : MonoBehaviour
     {
         while (Vector3.Distance(transform.position, targetPos) > 0.01f)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime); //all my niggas hate delta time 
             yield return null;
         }
 

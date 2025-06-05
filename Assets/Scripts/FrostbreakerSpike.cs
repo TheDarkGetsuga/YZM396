@@ -34,7 +34,6 @@ public class FrostbreakerSpike : MonoBehaviour
         col.enabled = false;
         origin = transform.parent;
 
-        // Determine outward direction (radial from center)
         if (origin != null)
             launchDirection = (transform.position - origin.position).normalized;
 

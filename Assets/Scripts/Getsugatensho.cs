@@ -36,7 +36,6 @@ public class Getsugatensho : MonoBehaviour
     {
         isFacingRight = facingRight;
 
-        // Flip the sprite visually if needed
         Vector3 scale = transform.localScale;
         scale.x = Mathf.Abs(scale.x) * (facingRight ? 1 : -1);
         transform.localScale = scale;
@@ -47,10 +46,8 @@ public class Getsugatensho : MonoBehaviour
         bool hit = false;
         hitstop = false;
 
-        // First, check for normal enemy tag cases
         if (other.CompareTag("Enemy"))
         {
-            // Try finding Enemy or BasicEnemy on this collider or its parent
             Enemy enemy = other.GetComponentInParent<Enemy>();
             if (enemy != null)
             {
@@ -69,7 +66,7 @@ public class Getsugatensho : MonoBehaviour
         }
         else
         {
-            // Handle the special enemy where tag is on child, script is on parent
+            // This section exists solely for the final boss to function properly
             Enemy enemy = other.GetComponentInParent<Enemy>();
             if (enemy != null && HasTaggedChild(enemy.transform, "Enemy"))
             {
@@ -140,7 +137,7 @@ public class Getsugatensho : MonoBehaviour
         AudioSource audioSource = soundObj.AddComponent<AudioSource>();
         audioSource.clip = clip;
         audioSource.volume = volume;
-        audioSource.spatialBlend = 1f; // Fully 3D
+        audioSource.spatialBlend = 1f;
         audioSource.rolloffMode = AudioRolloffMode.Linear;
         audioSource.minDistance = 1f;
         audioSource.maxDistance = 20f;

@@ -94,7 +94,6 @@ public class SaveManager : MonoBehaviour
         currentSave.sceneName = sceneName;
         SaveGame();
     }
-
     public void SetGold(int gold)
     {
         currentSave.gold = gold;

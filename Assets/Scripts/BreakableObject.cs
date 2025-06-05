@@ -3,29 +3,27 @@ using System.Collections;
 
 public class BreakableObject : MonoBehaviour
 {
-    public int health = 10; // Health of the breakable object
-    public int minCoins = 3; // Minimum number of coins to drop
-    public int maxCoins = 10; // Maximum number of coins to drop
-    public GameObject coinPrefab; // Coin prefab to spawn when broken
-    public float explosionForce = 5f; // Force to apply for the coins to explode outwards
+    public int health = 10;
+    public int minCoins = 3;
+    public int maxCoins = 10;
+    public GameObject coinPrefab;
+    public float explosionForce = 5f;
 
-    public AudioClip[] breakingSoundList; // List of breaking sounds
-    public AudioClip[] damageSoundList; // List of damage sounds
+    public AudioClip[] breakingSoundList;
+    public AudioClip[] damageSoundList;
     private AudioSource audioSource;
 
     private Rigidbody2D rb;
 
     void Start()
     {
-        // Add Rigidbody2D if not present
         rb = GetComponent<Rigidbody2D>();
         if (rb == null)
         {
             rb = gameObject.AddComponent<Rigidbody2D>();
             rb.bodyType = RigidbodyType2D.Kinematic;
         }
-
-        // Optional AudioSource in case you want to play preview/test sounds
+        //Should update this to use 3D audio later
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
@@ -49,14 +47,11 @@ public class BreakableObject : MonoBehaviour
 
     private void BreakObject()
     {
-        // Play breaking sound via a temporary GameObject
         if (breakingSoundList != null && breakingSoundList.Length > 0)
         {
             AudioClip breakSound = breakingSoundList[Random.Range(0, breakingSoundList.Length)];
             PlaySound2D(breakSound, transform.position);
         }
-
-        // Spawn coins
         int randomCoinAmount = Random.Range(minCoins, maxCoins + 1);
         for (int i = 0; i < randomCoinAmount; i++)
         {

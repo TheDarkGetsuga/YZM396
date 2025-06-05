@@ -131,8 +131,6 @@ public class VortexSphere : MonoBehaviour
 
         Destroy(soundObj, clip.length);
     }
-
-    // 🔧 Reusable tag check for children
     private bool HasTaggedChild(Transform parent, string tag)
     {
         foreach (Transform child in parent)

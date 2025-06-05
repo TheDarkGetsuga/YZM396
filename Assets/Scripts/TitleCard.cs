@@ -16,8 +16,6 @@ public class TitleCardController : MonoBehaviour
     void Awake()
     {
         text = GetComponent<TextMeshProUGUI>();
-
-        // Add or get CanvasGroup for fade control
         canvasGroup = GetComponent<CanvasGroup>();
         if (canvasGroup == null)
         {

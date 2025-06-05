@@ -6,7 +6,7 @@ public class MovingPlatform : MonoBehaviour
     public float moveAmountX = 0f;
     public float moveAmountY = 3f;
     public float moveSpeed = 5f;
-    public float activeDuration = 2f; // Time the platform stays at each position
+    public float activeDuration = 2f;
 
     private Vector3 startPosition;
     private Vector3 targetPosition;

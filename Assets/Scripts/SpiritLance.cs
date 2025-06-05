@@ -30,38 +30,20 @@ public class SpiritLance : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-        // Disable collision initially
         col.enabled = false;
-
-        // Save parent in case we want to detach later
         parentBeforeLaunch = transform.parent;
-
-        // Determine outward direction (away from center)
         Vector2 offsetFromCenter = (transform.position - parentBeforeLaunch.position).normalized;
         launchDirection = offsetFromCenter;
-
-        // Play spawn sound
         PlaySound(spawnSound);
-
-        // Start delayed launch
-        Invoke(nameof(Launch), launchDelay);
+        Invoke(nameof(Launch), launchDelay); //delay for a moment before launching
     }
 
     void Launch()
     {
-        // Detach from parent
         transform.parent = null;
-
-        // Enable collision
         col.enabled = true;
-
-        // Apply velocity
         rb.linearVelocity = launchDirection * launchSpeed;
-
         launched = true;
-
-        // Auto-destroy if no impact after maxLifetime
         Destroy(gameObject, maxLifetime);
     }
 
@@ -87,11 +69,8 @@ public class SpiritLance : MonoBehaviour
 
     void Explode()
     {
-        // Explosion visual
         if (explosionEffectPrefab)
             Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
-
-        // Play random explosion sound
         if (explosionSounds != null && explosionSounds.Length > 0)
         {
             int index = Random.Range(0, explosionSounds.Length);

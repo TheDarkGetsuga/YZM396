@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.Rendering.Universal; // Needed for Light2D
+using UnityEngine.Rendering.Universal; //Light2D
 
 public class FireballShooterManager : MonoBehaviour
 {
@@ -11,7 +11,7 @@ public class FireballShooterManager : MonoBehaviour
     public float cooldownMax = 6f;
 
     [Header("Warning Lights")]
-    public GameObject warningLights; // Parent object with Light2D children
+    public GameObject warningLights;
 
     [Tooltip("Maximum intensity of the pulsing lights")]
     public float pulseMaxIntensity = 1.2f;
@@ -58,18 +58,15 @@ public class FireballShooterManager : MonoBehaviour
             while (CameraFollow.Instance.IsInBossFightMode())
             {
                 float waitTime = Random.Range(cooldownMin, cooldownMax);
-                yield return new WaitForSeconds(waitTime - 1f); // 1 second before firing
-
-                // Smooth pulse for 1 second
+                yield return new WaitForSeconds(waitTime - 1f); // 1 sec early warning
                 if (lightComponents != null)
                     yield return StartCoroutine(PulseLights(1f));
 
-                // Fire
                 shouldShoot = true;
                 yield return null;
                 shouldShoot = false;
 
-                // Turn off lights
+                // Turn off warning lights
                 if (lightComponents != null)
                 {
                     foreach (var light in lightComponents)

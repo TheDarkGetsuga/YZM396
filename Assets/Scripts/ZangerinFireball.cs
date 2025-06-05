@@ -9,7 +9,7 @@ public class ZangerinFireball : MonoBehaviour
 
     [Header("Audio")]
     public AudioClip spawnSound;
-    public AudioClip[] explosionSounds; // Assign 3 clips in Inspector
+    public AudioClip[] explosionSounds;
     public float volume = 1f;
 
     private Transform target;
@@ -65,19 +65,13 @@ public class ZangerinFireball : MonoBehaviour
     {
         if (!other.CompareTag("Ground") && !other.CompareTag("Enemy") && !HasTaggedChild(other.transform, "Enemy"))
             return;
-
-        // Spawn explosion visual
         if (explosionPrefab)
             Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-
-        // Play random explosion sound
         if (explosionSounds != null && explosionSounds.Length > 0)
         {
             int index = Random.Range(0, explosionSounds.Length);
             PlaySoundAtPosition(explosionSounds[index], transform.position, volume);
         }
-
-        // Apply damage if Enemy
         Enemy enemy = other.GetComponentInParent<Enemy>();
         if (enemy != null)
         {

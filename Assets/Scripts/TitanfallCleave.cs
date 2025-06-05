@@ -10,11 +10,7 @@ public class TitanfallCleave : MonoBehaviour
     {
         // Detach from parent to freeze position
         transform.parent = null;
-
-        // Immediately check for enemies using the attached BoxCollider2D
         DoCleaveDamage();
-
-        // Destroy after short time (let particles/sounds play)
         Destroy(gameObject, lifetime);
     }
 

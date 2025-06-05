@@ -5,7 +5,7 @@ public class SpikeColumn : MonoBehaviour
 {
     public float moveAmountY = 3f;
     public float moveSpeed = 5f;
-    public float activeDuration = 2f; // Time the spike stays up or down
+    public float activeDuration = 2f;
 
     private Vector3 downPosition;
     private Vector3 upPosition;
@@ -23,7 +23,6 @@ public class SpikeColumn : MonoBehaviour
     {
         while (true)
         {
-            // Toggle position
             isUp = !isUp;
 
             if (moveCoroutine != null)

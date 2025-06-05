@@ -77,19 +77,16 @@ public class SoulswordProjectile : MonoBehaviour
         if (!other.CompareTag("Ground") && !other.CompareTag("Enemy") && !HasTaggedChild(other.transform, "Enemy"))
             return;
 
-        // Impact effect
         if (impactEffectPrefab)
             Instantiate(impactEffectPrefab, transform.position, Quaternion.identity);
 
-        // Sound
         if (impactSounds != null && impactSounds.Length > 0)
         {
             int index = Random.Range(0, impactSounds.Length);
             PlaySoundAtPosition(impactSounds[index], transform.position, volume);
         }
 
-        // Damage
-        Enemy enemy = other.GetComponentInParent<Enemy>();
+        Enemy enemy = other.GetComponentInParent<Enemy>(); 
         if (enemy != null)
         {
             enemy.TakeDamage(15, transform.position, false, transform.position, false);

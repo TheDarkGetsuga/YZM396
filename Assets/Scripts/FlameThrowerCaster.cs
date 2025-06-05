@@ -4,7 +4,7 @@ using System.Collections;
 public class FlamethrowerCaster : MonoBehaviour
 {
     public GameObject flamePrefab;
-    public Transform spawnTransform; // Updated from static Vector3 to dynamic Transform
+    public Transform spawnTransform;
     public bool facingRight = true;
 
     public void BeginCasting(float duration)
@@ -27,10 +27,10 @@ public class FlamethrowerCaster : MonoBehaviour
             yield return new WaitForSeconds(interval);
         }
 
-        Destroy(gameObject); // Self-destruct after casting
+        Destroy(gameObject);
     }
 
-    void SpawnFlame()
+    void SpawnFlame() //transform directions are bugged, fix this later
     {
         if (spawnTransform == null || flamePrefab == null) return;
 

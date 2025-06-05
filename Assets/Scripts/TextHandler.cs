@@ -3,9 +3,9 @@ using TMPro;
 
 public class TextHandler : MonoBehaviour
 {
-    public GameObject tutorialTextPrefab; // Prefab with Canvas and Text
-    public string message = "Press E to interact"; // The message text to display
-    public Vector3 offset = new Vector3(15.2f, 0.5f, 0); // Desired offset above the trigger
+    public GameObject tutorialTextPrefab;
+    public string message = "Press E to interact";
+    public Vector3 offset = new Vector3(15.2f, 0.5f, 0);
 
     private GameObject spawnedText;
 
@@ -13,21 +13,15 @@ public class TextHandler : MonoBehaviour
     {
         if (other.CompareTag("Player") && spawnedText == null)
         {
-            // Calculate spawn position with offset
             Vector3 spawnPosition = transform.position + offset;
             Debug.Log($"Spawning text at position: {spawnPosition}");
-
-            // Instantiate the tutorial text prefab at the correct position
             spawnedText = Instantiate(tutorialTextPrefab, spawnPosition, Quaternion.identity);
-
-            // Set the message for the text
             TextMeshProUGUI textComponent = spawnedText.GetComponentInChildren<TextMeshProUGUI>();
             if (textComponent != null)
             {
                 textComponent.text = message;
             }
-
-            // Set the spawned canvas to world space explicitly if not already set
+            // Set the spawned canvas to world space explicitly if not already set otherwise it might not display correctly
             Canvas canvas = spawnedText.GetComponentInChildren<Canvas>();
             if (canvas != null)
             {
@@ -35,25 +29,15 @@ public class TextHandler : MonoBehaviour
                 RectTransform canvasRectTransform = canvas.GetComponent<RectTransform>();
                 if (canvasRectTransform != null)
                 {
-                    // Set position directly
                     canvasRectTransform.position = spawnPosition;
-
-                    // Ensure size settings
-                    canvasRectTransform.sizeDelta = new Vector2(6f, 1f);  // Set size of canvas (width, height)
-
-                    // Debug log the canvas position
+                    canvasRectTransform.sizeDelta = new Vector2(6f, 1f); //W,H
                     Debug.Log($"Canvas position set to: {canvasRectTransform.position}");
                 }
             }
-
-            // Ensure the text RectTransform is centered inside the canvas
             RectTransform textRectTransform = textComponent.GetComponent<RectTransform>();
             if (textRectTransform != null)
             {
-                // Reset position within the canvas (centered)
                 textRectTransform.anchoredPosition = Vector2.zero;
-
-                // Ensure text RectTransform size
                 textRectTransform.sizeDelta = new Vector2(6f, 1f);  // Set size of text box (width, height)
             }
         }

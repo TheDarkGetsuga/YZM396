@@ -15,7 +15,6 @@ public class PauseMenu : MonoBehaviour
 
         pauseCanvas.enabled = false; // Hide at start
 
-        // Find the Return to Main Menu button and hook it up
         Button returnButton = GetComponentInChildren<Button>();
         if (returnButton != null)
         {
@@ -41,20 +40,20 @@ public class PauseMenu : MonoBehaviour
     void PauseGame()
     {
         pauseCanvas.enabled = true;
-        Time.timeScale = 0f; // Pause game time
+        Time.timeScale = 0f;
         isPaused = true;
     }
 
     void ResumeGame()
     {
         pauseCanvas.enabled = false;
-        Time.timeScale = 1f; // Resume game time
+        Time.timeScale = 1f;
         isPaused = false;
     }
 
     void ReturnToMainMenu()
     {
-        Time.timeScale = 1f; // Make sure time is normal before loading scene
+        Time.timeScale = 1f;
         SceneManager.LoadScene("Menu");
     }
 }

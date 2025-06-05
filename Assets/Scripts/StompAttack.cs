@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class StompAttack : MonoBehaviour
+public class StompAttack : MonoBehaviour //siktir et mario yapmıyoruz
 {
     private void OnCollisionEnter2D(Collision2D collision)
     {

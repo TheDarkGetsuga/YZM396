@@ -132,8 +132,6 @@ public class SwordSwing : MonoBehaviour
         {
             attackArea.SetActive(true);
         }
-
-        // Play all 4 swing sound lists (only if not magic)
         StartCoroutine(PlayRandomFromList(swingSoundList1, 0.5f));
         StartCoroutine(PlayRandomFromList(swingSoundList2, 0.5f));
         StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));
@@ -152,7 +150,7 @@ public class SwordSwing : MonoBehaviour
         }
     }
     void ResetCombo() => comboStep = 0;
-    public void LoadSwordsFromSave() //this is on SwordSwing.cs
+    public void LoadSwordsFromSave()
     {
         inventory.Clear();
 
@@ -223,7 +221,7 @@ public class SwordSwing : MonoBehaviour
         }
     }
 
-    void TriggerMagicAttack()
+    void TriggerMagicAttack() //Cavemen if else chain for magic attacks, use switch statements on later refactoring
     {
         if (isCastingMagic) return;
 
@@ -384,14 +382,10 @@ public class SwordSwing : MonoBehaviour
 
         Transform player = transform.root;
         GameObject cleave = Instantiate(titanfallCleavePrefab, player.position, Quaternion.identity, player);
-
-        // Flip based on player direction
         Vector3 scale = cleave.transform.localScale;
         if (player.localScale.x < 0)
             scale.x *= -1;
         cleave.transform.localScale = scale;
-
-        // Slight forward offset
         cleave.transform.localPosition += new Vector3(1f * Mathf.Sign(player.localScale.x), -0.5f, 0f);
     }
     private IEnumerator SpawnAndRotateScythes()
@@ -423,8 +417,6 @@ public class SwordSwing : MonoBehaviour
 
             scythes[i] = scythe;
         }
-
-        // Wait for duration, then destroy scythes
         float elapsed = 0f;
         while (elapsed < duration)
         {
@@ -499,15 +491,12 @@ public class SwordSwing : MonoBehaviour
             Debug.LogWarning("Sword Tip or Soulsword projectile prefab not assigned.");
             return;
         }
-
-        // Spawn projectile at the tip's position and rotation
         GameObject projectile = Instantiate(
             soulswordProjectilePrefab,
             spawnPoint.position,
             spawnPoint.rotation
         );
 
-        // Copy scale
         projectile.transform.localScale = spawnPoint.lossyScale;
 
         Transform projectileTip = projectile.transform.Find("SwordTip");
@@ -521,17 +510,14 @@ public class SwordSwing : MonoBehaviour
     public void SpawnZangerinFireballFromEvent()
     {
         if (currentSword == null || currentSword.swordName != "Kingslayer") return;
-
-        // Spawn at the sword tip
         Vector3 spawnPos = spawnPoint.position;
-
         GameObject fireball = Instantiate(zangerinFireballPrefab, spawnPos, Quaternion.identity);
     }
     IEnumerator SoulbinderEffect()
     {
         // DO NOT set isCastingMagic to true here, so attacking is still allowed
 
-        // Make the player 65% transparent
+        // Transparency is bugged
         playerMovement.Speed = 12f;
         Color originalColor = spriteRenderer.color;
         Color transparentColor = originalColor;
@@ -539,23 +525,17 @@ public class SwordSwing : MonoBehaviour
         SetPlayerTransparency(0.35f);
         spriteRenderer.color = transparentColor;
 
-        // Make player immune to damage
+        // Note to self: Invincibility doesn't work consistently if cast too rapidly, find a fix
         playerHP.SetInvincible(true);
-
-        // Spawn visual-only Soulbinder aura (like Shadowcloak)
         GameObject soulbinderEffect = Instantiate(soulbinderPrefab, transform.root.position, Quaternion.identity, transform.root);
         soulbinderEffect.transform.localPosition = Vector3.zero;
 
-        yield return new WaitForSeconds(10f); // Duration of effect
-
-        // Revert transparency and invincibility
+        yield return new WaitForSeconds(10f);
         spriteRenderer.color = originalColor;
         playerHP.SetInvincible(false);
         SetPlayerTransparency(1f);
         animator.SetTrigger("ReturnToIdle");
         playerMovement.Speed = 8f;
-
-        // Clean up effect if needed (optional, depends on prefab behavior)
         Destroy(soulbinderEffect);
     }
 
@@ -637,8 +617,7 @@ public class SwordSwing : MonoBehaviour
             attackArea.SetActive(false);
         }
     }
-
-    // Animation Event Methods (optional, unused now)
+    //Unused animation event methods
     public void PlaySwingSoundList1() => StartCoroutine(PlayRandomFromList(swingSoundList1, 0.5f));
     public void PlaySwingSoundList2() => StartCoroutine(PlayRandomFromList(swingSoundList2, 0.5f));
     public void PlaySwingSoundList3() => StartCoroutine(PlayRandomFromList(swingSoundList3, 0.5f));

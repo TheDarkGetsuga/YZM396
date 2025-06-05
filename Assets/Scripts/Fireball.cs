@@ -19,10 +19,9 @@ public class Fireball : MonoBehaviour
 
     private void Start()
     {
-        // Set ground layer index
         groundLayer = LayerMask.NameToLayer("Ground");
 
-        // Play spawn sound via temporary 2D audio object
+        // Should turn this to 3D audio later
         if (spawnSound)
         {
             Play2DSound(spawnSound);
@@ -33,7 +32,6 @@ public class Fireball : MonoBehaviour
 
     private void Update()
     {
-        // Count frames since spawn
         frameCount++;
     }
 
@@ -59,13 +57,10 @@ public class Fireball : MonoBehaviour
     }
     private void Explode()
     {
-        // Spawn explosion visual effect
         if (explosionEffect != null)
         {
             Instantiate(explosionEffect, transform.position, Quaternion.identity);
         }
-
-        // Play random explosion sound via temporary 2D object
         if (explosionSounds.Length > 0)
         {
             AudioClip randomClip = explosionSounds[Random.Range(0, explosionSounds.Length)];
@@ -81,7 +76,7 @@ public class Fireball : MonoBehaviour
         AudioSource audioSource = soundObj.AddComponent<AudioSource>();
         audioSource.clip = clip;
         audioSource.volume = 0.5f;
-        audioSource.spatialBlend = 0f; // 2D sound
+        audioSource.spatialBlend = 0f; // gotta change this for 3D but it doesnt sound good no matter what i try
         audioSource.Play();
         Destroy(soundObj, clip.length + 0.1f);
     }

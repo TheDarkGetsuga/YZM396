@@ -4,11 +4,14 @@ using System.Collections;
 
 public class AudioManager : MonoBehaviour
 {
-    [SerializeField] private AudioClip[] levelMusicClips; // Array of music clips for each scene
+    [SerializeField] private AudioClip[] levelMusicClips;
     private AudioSource audioSource;
 
     private static AudioManager instance;
-    private int currentlyPlayingIndex = -1; // Tracks which music clip is playing
+    private int currentlyPlayingIndex = -1;
+
+    private bool isMuted = false;
+    private float savedVolume = 1f;
 
     void Awake()
     {
@@ -20,9 +23,11 @@ public class AudioManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
 
         audioSource = GetComponent<AudioSource>();
+        savedVolume = audioSource.volume;
     }
 
     void Start()
@@ -30,16 +35,24 @@ public class AudioManager : MonoBehaviour
         PlayMusicForCurrentScene();
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            ToggleMute();
+        }
+    }
+
     void OnLevelWasLoaded(int level)
     {
-        currentlyPlayingIndex = -1; // ✅ Reset when loading a new scene
+        currentlyPlayingIndex = -1;
         PlayMusicForCurrentScene();
     }
 
     private void PlayMusicForCurrentScene()
     {
         string sceneName = SceneManager.GetActiveScene().name;
-
+        //Note to self, find a better fucking way to do this
         if (sceneName == "Menu") PlayMusicClip(15);
         else if (sceneName == "Level1") PlayMusicClip(1);
         else if (sceneName == "Level2") PlayMusicClip(2);
@@ -56,27 +69,29 @@ public class AudioManager : MonoBehaviour
         else if (sceneName == "Level13") PlayMusicClip(13);
         else if (sceneName == "Credits") PlayMusicClip(0);
     }
+
     public void FadeOutMusic(float duration)
     {
-    StartCoroutine(FadeOutCoroutine(duration));
+        StartCoroutine(FadeOutCoroutine(duration));
     }
 
     private IEnumerator FadeOutCoroutine(float duration)
     {
-        float startVolume = audioSource.volume;
+        float startVolume = isMuted ? savedVolume : audioSource.volume;
         float t = 0f;
         while (t < duration)
         {
             t += Time.deltaTime;
-            audioSource.volume = Mathf.Lerp(startVolume, 0f, t / duration);
+            float targetVolume = Mathf.Lerp(startVolume, 0f, t / duration);
+            audioSource.volume = isMuted ? 0f : targetVolume;
             yield return null;
         }
         audioSource.Stop();
-        audioSource.volume = startVolume; // Reset volume for next scene
+        audioSource.volume = isMuted ? 0f : savedVolume;
     }
+
     public void PlayMusicClip(int index)
     {
-        // Ignore if the requested clip is already playing
         if (index == currentlyPlayingIndex)
             return;
 
@@ -86,10 +101,17 @@ public class AudioManager : MonoBehaviour
             audioSource.loop = true;
             audioSource.Play();
             currentlyPlayingIndex = index;
+            audioSource.volume = isMuted ? 0f : savedVolume;
         }
         else
         {
             Debug.LogWarning("Music clip index out of range: " + index);
         }
+    }
+
+    private void ToggleMute()
+    {
+        isMuted = !isMuted;
+        audioSource.volume = isMuted ? 0f : savedVolume;
     }
 }

@@ -5,8 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class Enemy : MonoBehaviour
 {
-    public enum EnemyType { Grounded, Flying, Slime, AnimatedGround }
-    public EnemyType enemyType = EnemyType.Grounded;
+    public enum EnemyType { Grounded, Flying, Slime, AnimatedGround } //not enough time for flying enemies fuck it we ball
+    public EnemyType enemyType = EnemyType.Grounded;                  //also note to self, centralising all enemies into one was not a good idea dont do it again
     public enum EnemyStyle { Normal, Boss }
     public EnemyStyle enemyStyle = EnemyStyle.Normal;
     public string bossName = "The Toxic Champion Armisael";
@@ -39,7 +39,7 @@ public class Enemy : MonoBehaviour
     private AudioSource audioSource;
     public BossHealthBar bossHPBar;
 
-    [Header("Slime Animation Clips")]
+    [Header("Slime Animation Clips")] //Note to self, never fucking do this again. THE FUCK YOU MEAN I CAN IMPORT ANIMATIONS DIRECTLY
     public Sprite[] slimeIdleFrames;
     public Sprite[] slimeJumpStartupFrames;
     public Sprite[] slimeJumpFallFrames;
@@ -102,7 +102,7 @@ public class Enemy : MonoBehaviour
         {
             if (distanceToPlayer <= detectionRadius)
             {
-                EnterAttackState();
+                EnterAttackState(); //Make sure this doesnt bug out if dupes are called
             }
         }
         else
@@ -121,7 +121,7 @@ public class Enemy : MonoBehaviour
                 attackStateTimer = 0f;
             }
 
-            MoveTowardPlayer();
+            MoveTowardPlayer(); //Todo: add jump checks for grounded enemies too
         }
 
         if (isSlime)
@@ -145,7 +145,7 @@ public class Enemy : MonoBehaviour
     void EnterAttackState()
     {
         if (enemyStyle == EnemyStyle.Boss)
-        {
+        {   //Boss fight music and camera adjustments 
             string sceneName = SceneManager.GetActiveScene().name;
             if (sceneName == "Level4") FindFirstObjectByType<AudioManager>().PlayMusicClip(5);
             else if (sceneName == "Level8") FindFirstObjectByType<AudioManager>().PlayMusicClip(10);
@@ -154,7 +154,7 @@ public class Enemy : MonoBehaviour
             CameraFollow.Instance.SetBossFightMode(true);
             if (bossHPBar != null)
             {
-                bossHPBar.SetHealth(currentHealth);
+                bossHPBar.SetHealth(currentHealth); //this doesnt work
             }
         }
         else
@@ -174,7 +174,7 @@ public class Enemy : MonoBehaviour
         PlayAnimationOnce(animatedAttackFrames, animatedFrameRate, "Attack", () =>
         {
             isPlayingAttackAnimation = false;
-            // Resume appropriate animation after attack finishes
+            // Resume previous animation after attacking
             if (Mathf.Abs(rb.linearVelocity.x) > 0.1f)
             {
                 PlayAnimation(animatedWalkFrames, animatedFrameRate, "Walk");
@@ -199,7 +199,8 @@ public class Enemy : MonoBehaviour
             Vector2 dir = new Vector2(player.position.x - transform.position.x, 0f).normalized;
             rb.linearVelocity = new Vector2(dir.x * moveSpeed, rb.linearVelocity.y);
 
-            // Flip the sprite to face the player
+            // This is bugged, flipping to the right doesnt work properly
+            // gaben pls fix
             if (dir.x > 0.05f)
                 transform.localScale = new Vector3(transform.localScale.x * 1, transform.localScale.y, transform.localScale.z);
             else if (dir.x < -0.05f && transform.localScale.x > 0)
@@ -227,7 +228,7 @@ public class Enemy : MonoBehaviour
 
         if (!isGrounded && rb.linearVelocity.y < -0.1f)
         {
-            PlayAnimation(slimeJumpFallFrames, slimeFrameRate, "JumpFall");
+            PlayAnimation(slimeJumpFallFrames, slimeFrameRate, "JumpFall"); //WHY THE FUCK DOES THIS MAKE SLIMES IMMORTAL AAAAAAAAAAAAAAA
         }
 
         if (isGrounded && !wasGroundedLastFrame)
@@ -289,7 +290,7 @@ public class Enemy : MonoBehaviour
         onComplete?.Invoke();
     }
 
-    private IEnumerator WaitThenPlayFallAnimation()
+    private IEnumerator WaitThenPlayFallAnimation() //note to self, dont tie slime enemies to enemy doors they might not die properly
     {
         yield return new WaitForSeconds(0.2f);
         if (!isDead)
@@ -321,7 +322,7 @@ public class Enemy : MonoBehaviour
         ApplyKnockback(source);
         PlayDamageSounds();
 
-        if (givesMana && playerHP != null) playerHP.RegenerateMana(manaAmount);
+        if (givesMana && playerHP != null) playerHP.RegenerateMana(manaAmount); //todo, come up with a better mana system this is too boring
         if (enemyStyle == EnemyStyle.Boss && bossHPBar != null) bossHPBar.SetHealth(currentHealth);
         if (currentHealth <= 0f) Die();
     }
@@ -342,7 +343,7 @@ public class Enemy : MonoBehaviour
     }
     void SpawnBloodEffect(Vector3 hitPoint, Vector3 source)
     {
-        if (bloodPrefab)
+        if (bloodPrefab) //yeah this doesnt work and i have no idea why
         {
             GameObject blood = Instantiate(bloodPrefab, hitPoint, Quaternion.identity, transform);
             var sr = blood.GetComponent<SpriteRenderer>();
@@ -372,7 +373,7 @@ public class Enemy : MonoBehaviour
     IEnumerator FlashRed()
     {
         spriteRenderer.color = Color.red;
-        if (redLight != null) redLight.enabled = true;
+        if (redLight != null) redLight.enabled = true; //for slime enemies make sure this red light is the first in the hierarchy order or they flash green instead
         yield return new WaitForSeconds(0.1f);
         spriteRenderer.color = originalColor;
         if (redLight != null) redLight.enabled = false;
@@ -397,6 +398,7 @@ public class Enemy : MonoBehaviour
         }
         if (isSlime)
         {
+            //This is cursed
             PlayAnimationOnce(slimeDeathFrames, slimeFrameRate, "Death", () => Destroy(gameObject));
         }
         else if (isAnimated)

@@ -14,13 +14,12 @@ public class CameraFocusTrigger : MonoBehaviour
 
     private bool hasTriggered = false;
     private bool isCoolingDown = false;
-
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!hasTriggered && !isCoolingDown && other.CompareTag("Player") && CameraFollow.Instance != null)
         {
             hasTriggered = true;
-            CameraFollow.Instance.FocusTemporarilyOnTarget(platformToFocus, focusDuration, cameraSpeed, trackWhileMoving);
+            CameraFollow.Instance.FocusTemporarilyOnTarget(platformToFocus, focusDuration, cameraSpeed, trackWhileMoving); // This causes bugs with the player interactions for some magical reason
         }
     }
 
